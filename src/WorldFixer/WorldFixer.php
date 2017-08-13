@@ -23,7 +23,7 @@ class WorldFixer extends PluginBase implements Listener{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args): bool{
+    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args){
 
         if(!$sender instanceof Player){
             return false;
