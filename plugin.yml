@@ -7,8 +7,8 @@ description: "Now you can block, slabs easily and quickly!"
 
 commands:
   wf:
-    description: "Main command"
-        
+    description: "WorldFixer main command"
+    aliases: ["worldfixer"]
 permissions:
   wf:
     description: "Permission to do all actions"
