@@ -2,7 +2,7 @@
 
 namespace WorldFixer;
 
-use pocketmine\item\Item;
+use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\command\Command;
@@ -37,23 +37,23 @@ class WorldFixer extends PluginBase implements Listener{
 
         if(!$sender instanceof Player){
             $sender->sendMessage("§cThis command can be used only ingame!");
-            return false;
+            return true;
         }
 
-        if(in_array($cmd->getName(), ["wf", "worldfixer"])){
+        if($cmd->getName() === "wf"){
             if(empty($args[0])){
                 $sender->sendMessage(TextFormat::RED."Use /wf help for help");
-                return false;
+                return true;
             }
             switch(strtolower($args[0])){
                 case "fix":
                     if(!$sender->hasPermission("wf.command.fix") && !$sender->isOp()){
                         $sender->sendMessage($cmd->getPermissionMessage());
-                        return false;
+                        return true;
                     }
                     if(!$this->isPosSet($sender)){
                         $sender->sendMessage(TextFormat::RED."You must select both positions first!");
-                        return false;
+                        return true;
                     }
 
                     list($x1, $y1, $z1, $level1) = explode(':', $this->selectors[strtolower($sender->getName())]['pos1']);
@@ -61,7 +61,7 @@ class WorldFixer extends PluginBase implements Listener{
 
                     if($level1 !== $level2){
                         $sender->sendMessage(TextFormat::RED."Both positions must be in the same level!");
-                        return false;
+                        return true;
                     }
 
                     $level = $this->getServer()->getLevel($level1);
@@ -73,23 +73,23 @@ class WorldFixer extends PluginBase implements Listener{
                 case "wand":
                     if(!$sender->hasPermission("wf.command.wand") && !$sender->isOp()){
                         $sender->sendMessage($cmd->getPermissionMessage());
-                        return false;
+                        return true;
                     }
                     if($this->isSelector($sender)){
-                        return false;
+                        return true;
                     }
                     $this->selectors[strtolower($sender->getName())]['ins'] = $sender;
                     $this->selectors[strtolower($sender->getName())]['block'] = 1;
                     $sender->sendMessage(TextFormat::GREEN."Now select two blocks");
-                    return false;
+                    return true;
                 case "help":
                     $sender->sendMessage("§e> WorldFixer help <\n".
                         "§a/wf wand §7select two positions\n".
                         "§a/wf fix §7fix all blocks and slabs in world");
-                    return false;
+                    return true;
                 default:
                     $sender->sendMessage(TextFormat::RED."Use /wf help for help");
-                    return false;
+                    return true;
             }
         }
     }
@@ -146,8 +146,6 @@ class WorldFixer extends PluginBase implements Listener{
      */
     public function fix(Level $level, $x1, $y1, $z1, $x2, $y2, $z2):int{
 
-        if(!$level instanceof Level) $level = $this->getServer()->getLevel(intval($level));
-
         $pos1 = new Vector3(min($x1, $x2), min($y1, $y2), min($z1, $z2));
         $pos2 = new Vector3(max($x1, $x2), max($y1, $y2), max($z1, $z2));
 
@@ -185,23 +183,23 @@ class WorldFixer extends PluginBase implements Listener{
                             $level->setBlockIdAt($x, $y, $z, 157);
                             break;
                         case 188:
-                            $level->setBlockIdAt($x, $y, $z, Item::FENCE);
+                            $level->setBlockIdAt($x, $y, $z, Block::FENCE);
                             $level->setBlockDataAt($x, $y, $z, 1);
                             break;
                         case 189:
-                            $level->setBlockIdAt($x, $y, $z, Item::FENCE);
+                            $level->setBlockIdAt($x, $y, $z, Block::FENCE);
                             $level->setBlockDataAt($x, $y, $z, 2);
                             break;
                         case 190:
-                            $level->setBlockIdAt($x, $y, $z, Item::FENCE);
+                            $level->setBlockIdAt($x, $y, $z, Block::FENCE);
                             $level->setBlockDataAt($x, $y, $z, 3);
                             break;
                         case 191:
-                            $level->setBlockIdAt($x, $y, $z, Item::FENCE);
+                            $level->setBlockIdAt($x, $y, $z, Block::FENCE);
                             $level->setBlockDataAt($x, $y, $z, 4);
                             break;
                         case 192:
-                            $level->setBlockIdAt($x, $y, $z, Item::FENCE);
+                            $level->setBlockIdAt($x, $y, $z, Block::FENCE);
                             $level->setBlockDataAt($x, $y, $z, 5);
                             break;
                         case 166:
@@ -209,21 +207,16 @@ class WorldFixer extends PluginBase implements Listener{
                             $level->setBlockIdAt($x, $y, $z, 95);
                             $level->setBlockDataAt($x, $y, $z, 0);
                             break;
-                        case 144:
-                            // mob heads -> air
-                            $level->setBlockIdAt($x, $y, $z, 0);
-                            $level->setBlockDataAt($x, $y, $z, 0);
-                            break;
                         case 84:
                             $level->setBlockIdAt($x, $y, $z, 25);
                             $level->setBlockDataAt($x, $y, $z, 0);
                             break;
                         case Item::END_ROD:
-                            $level->setBlockIdAt($x, $y, $z, Item::GRASS_PATH);
+                            $level->setBlockIdAt($x, $y, $z, Block::GRASS_PATH);
                             $level->setBlockDataAt($x, $y, $z, 0);
                             break;
                         case Item::GRASS_PATH:
-                            $level->setBlockIdAt($x, $y, $z, Item::END_ROD);
+                            $level->setBlockIdAt($x, $y, $z, Block::END_ROD);
                             $level->setBlockDataAt($x, $y, $z, 0);
                             break;
                     }
