@@ -131,7 +131,7 @@ class WorldFixer extends PluginBase implements Listener{
      * @return bool
      */
     public function isPosSet(Player $p){
-        return isset($this->selectors[strtolower($p->getName())]['pos1']) && isset($this->selectors[strtolower($p->getName())]['pos2'])
+        return isset($this->selectors[strtolower($p->getName())]['pos1']) && isset($this->selectors[strtolower($p->getName())]['pos2']);
     }
 
     /**
